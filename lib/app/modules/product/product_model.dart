@@ -1,33 +1,43 @@
-import 'dart:convert';
-
 class ProductKit {
-  final String title;
-  final List<ProductItem> itens;
-  ProductKit({required this.title, required this.itens});
+  final String name;
+  final bool favorite;
+  final List<Product> itens;
+  ProductKit({required this.name, required this.itens, required this.favorite});
 
   factory ProductKit.fromMap(Map<String, dynamic> map) {
     return ProductKit(
-      title: map['title'],
-      itens: map['title'],
+      name: map['name'],
+      favorite: map['favorite'],
+      itens: map['itens'].map<Product>((e) => Product.fromMap(e)).toList(),
     );
   }
 }
 
-class ProductItem {
-  final String title;
+class Product {
+  final String name;
   final String image;
   final bool favorite;
+  final String video;
+  final String pdf;
+  final String model3d;
 
-  ProductItem(
-      {required this.title, required this.image, required this.favorite});
+  Product({
+    required this.name,
+    required this.image,
+    required this.favorite,
+    required this.video,
+    required this.pdf,
+    required this.model3d,
+  });
 
-  ProductItem fromJson(String json) => ProductItem.fromMap(jsonDecode(json));
-
-  factory ProductItem.fromMap(Map<String, dynamic> map) {
-    return ProductItem(
-      title: map['title'],
+  factory Product.fromMap(Map<String, dynamic> map) {
+    return Product(
+      name: map['name'],
       image: map['image'],
       favorite: map['favorite'],
+      video: map['video'],
+      pdf: map['pdf'],
+      model3d: map['model3d'],
     );
   }
 }

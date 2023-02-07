@@ -8,6 +8,7 @@ class AppTheme {
     primaryColor: AppColors.primary,
     inputDecorationTheme: const InputDecorationTheme(),
     textTheme: textTheme,
+    fontFamily: 'SpaceGrotesk'
   );
   static TextTheme get text => theme.textTheme;
 
