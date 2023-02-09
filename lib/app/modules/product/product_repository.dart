@@ -17,10 +17,15 @@ class ProductRepository {
     await _sharedPreferences.setString(_kitKey, jsonEncode(_data));
   }
 
-  static List<ProductKit> getKits() =>
-      jsonDecode(_sharedPreferences.getString(_kitKey)!).map<ProductKit>((e) => ProductKit.fromMap(e)).toList();
+  static List<ProductKit> getKits() => jsonDecode(_sharedPreferences.getString(_kitKey)!)
+      .map<ProductKit>((e) => ProductKit.fromMap(e))
+      .toList();
 
   static bool get _hasKitsInDB => _sharedPreferences.getString(_kitKey) == null;
+
+  static Future<void> updateKits(List<ProductKit> products) async {
+    await _sharedPreferences.setString(_kitKey, jsonEncode(products.map((e) => e.toMap()).toList()));
+  }
 
   static final List<Map<String, dynamic>> _data = [
     {

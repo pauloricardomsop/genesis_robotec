@@ -34,6 +34,12 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamOut(
@@ -81,10 +87,16 @@ class _ProductPageState extends State<ProductPage> {
                                 fontWeight: AppFontWeight.bold,
                                 color: const Color(0xFF3B3B3B)),
                           ),
-                          Icon(
-                            product.favorite ? Icons.star : Icons.star_border,
-                            size: 32,
-                            color: product.favorite ? const Color(0xFFF2D027) : Colors.grey[500],
+                          InkWell(
+                            onTap: () {
+                              product.favorite = !product.favorite;
+                              _productController.updateKits();
+                            },
+                            child: Icon(
+                              product.favorite ? Icons.star : Icons.star_border,
+                              size: 32,
+                              color: product.favorite ? const Color(0xFFF2D027) : Colors.grey[500],
+                            ),
                           ),
                         ],
                       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:genesis_robotec/app/core/components/h.dart';
 import 'package:genesis_robotec/app/core/components/stream_out.dart';
+import 'package:genesis_robotec/app/core/components/w.dart';
 import 'package:genesis_robotec/app/core/global_resources/global_resources.dart';
 import 'package:genesis_robotec/app/core/theme/app_font_weight.dart';
 import 'package:genesis_robotec/app/modules/product/product_model.dart';
@@ -27,59 +28,98 @@ class _KitsPageState extends State<KitsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
-      body: StreamOut<List<ProductKit>>(
-        stream: _productController.kits.listen,
-        child: (_, kits) => ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 36),
-          children: [
-            const Align(
-              alignment: Alignment.centerRight,
-              child: Icon(Icons.dehaze),
+        backgroundColor: const Color(0xFFFFFFFF),
+        body: StreamOut<List<ProductKit>>(
+          stream: _productController.kits.listen,
+          child: (_, kits) => StreamOut<ProductUtils>(
+            stream: _productController.utils.listen,
+            child: (_, utils) => _body(
+              utils,
+              kits
+                  .where((e) => e.name
+                      .toLowerCase()
+                      .replaceAll(' ', '')
+                      .contains(utils.controller.value.text.toLowerCase().replaceAll(' ', '')))
+                  .toList(),
             ),
-            const H(16),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: Container(
-                color: const Color(0xFFEBEFF2),
-                child: TextField(
-                  controller: TextEditingController(),
-                  cursorColor: const Color(0xFF3B3B3B),
-                  decoration: InputDecoration(
-                    hintStyle: TextStyle(
-                        fontFamily: 'SpaceGrotesk',
-                        fontSize: 14,
-                        color: const Color(0xFF7E8996),
-                        fontWeight: AppFontWeight.light),
-                    hintText: 'Pesquisar Kits Robóticos',
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      color: Color(0xFF7E8996),
-                      size: 28,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                    fillColor: const Color(0xFFEBEFF2),
-                    hoverColor: const Color(0xFFEBEFF2),
-                    focusColor: const Color(0xFFEBEFF2),
-                    border: const OutlineInputBorder(borderSide: BorderSide.none),
-                  ),
+          ),
+        ));
+  }
+
+  Widget _body(ProductUtils utils, List<ProductKit> kits) {
+    return ListView(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 36),
+      children: [
+        const Align(
+          alignment: Alignment.centerRight,
+          child: Icon(Icons.dehaze),
+        ),
+        const H(16),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: Container(
+            color: const Color(0xFFEBEFF2),
+            child: TextField(
+              controller: utils.controller,
+              onChanged: (v) => _productController.utils.update(),
+              cursorColor: const Color(0xFF3B3B3B),
+              decoration: InputDecoration(
+                hintStyle: TextStyle(
+                    fontFamily: 'SpaceGrotesk',
+                    fontSize: 14,
+                    color: const Color(0xFF7E8996),
+                    fontWeight: AppFontWeight.light),
+                hintText: 'Pesquisar Kits Robóticos',
+                prefixIcon: const Icon(
+                  Icons.search,
+                  color: Color(0xFF7E8996),
+                  size: 28,
                 ),
+                suffixIcon: utils.controller.text.isNotEmpty
+                    ? InkWell(
+                        onTap: () {
+                          utils.controller.clear();
+                          _productController.utils.update();
+                        },
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.grey[600]!,
+                        ),
+                      )
+                    : null,
+                contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                fillColor: const Color(0xFFEBEFF2),
+                hoverColor: const Color(0xFFEBEFF2),
+                focusColor: const Color(0xFFEBEFF2),
+                border: const OutlineInputBorder(borderSide: BorderSide.none),
               ),
             ),
-            const H(24),
-            Text(
-              'Kits Robóticos',
-              style: TextStyle(
-                  fontFamily: 'SpaceGrotesk',
-                  fontSize: 24,
-                  color: const Color(0xFF3B3B3B),
-                  fontWeight: AppFontWeight.bold),
-            ),
-            const H(24),
-            for (var kit in kits) _kitItem(kit)
-          ],
+          ),
         ),
-      ),
+        const H(24),
+        Text(
+          'Kits Robóticos',
+          style: TextStyle(
+              fontFamily: 'SpaceGrotesk',
+              fontSize: 24,
+              color: const Color(0xFF3B3B3B),
+              fontWeight: AppFontWeight.bold),
+        ),
+        const H(24),
+        if (kits.isEmpty)
+          Row(
+            children: [
+              Icon(
+                Icons.filter_alt_outlined,
+                color: Colors.grey[500],
+              ),
+              const W(8),
+              const Text('Não foram encontrados kits com esse filtro')
+            ],
+          )
+        else
+          for (var kit in kits) _kitItem(kit)
+      ],
     );
   }
 
@@ -115,7 +155,6 @@ class _KitsPageState extends State<KitsPage> {
                                           Expanded(
                                             child: SizedBox(
                                               height: double.maxFinite,
-                                              // color: Colors.blue,
                                               child: Image.network(
                                                 'https://miro.medium.com/max/640/0*i1v1In2Tn4Stnwnl.jpg',
                                                 fit: BoxFit.cover,
@@ -135,11 +174,17 @@ class _KitsPageState extends State<KitsPage> {
                           ),
                           Align(
                             alignment: Alignment.topRight,
-                            child: Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: Icon(
-                                kit.favorite ? Icons.star : Icons.star_border,
-                                color: Colors.white,
+                            child: InkWell(
+                              onTap: () {
+                                kit.favorite = !kit.favorite;
+                                _productController.updateKits();
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Icon(
+                                  kit.favorite ? Icons.star : Icons.star_border,
+                                  color: kit.favorite ? const Color(0xFFF2D027) : Colors.grey[500],
+                                ),
                               ),
                             ),
                           ),
