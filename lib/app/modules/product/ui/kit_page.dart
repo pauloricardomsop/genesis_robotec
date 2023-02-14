@@ -29,41 +29,44 @@ class _KitPageState extends State<KitPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
-      body: StreamOut<ProductKit>(
-        stream: _productController.kit.listen,
-        child: (_, kit) => ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 36),
-          children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: InkWell(
-                  onTap: () => Navigator.pop(context), child: const Icon(Icons.arrow_back_ios)),
-            ),
-            const H(24),
-            Text(
-              'Kit ${kit.name}',
-              style: TextStyle(
-                  fontFamily: 'SpaceGrotesk',
-                  fontSize: 24,
-                  color: const Color(0xFF3B3B3B),
-                  fontWeight: AppFontWeight.bold),
-            ),
-            const H(32),
-            StaggeredGrid.count(
-              crossAxisCount: 2,
-              mainAxisSpacing: 18,
-              crossAxisSpacing: 18,
-              children: kit.itens
-                  .map((e) => StaggeredGridTile.count(
-                        crossAxisCellCount: 1,
-                        mainAxisCellCount: 1,
-                        child: _kitItem(e),
-                      ))
-                  .toList(),
-            ),
-          ],
+    return SafeArea(
+      top: true,
+      child: Scaffold(
+        backgroundColor: const Color(0xFFFFFFFF),
+        body: StreamOut<ProductKit>(
+          stream: _productController.kit.listen,
+          child: (_, kit) => ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 36),
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: InkWell(
+                    onTap: () => Navigator.pop(context), child: const Icon(Icons.arrow_back_ios)),
+              ),
+              const H(24),
+              Text(
+                'Kit ${kit.name}',
+                style: TextStyle(
+                    fontFamily: 'SpaceGrotesk',
+                    fontSize: 24,
+                    color: const Color(0xFF3B3B3B),
+                    fontWeight: AppFontWeight.bold),
+              ),
+              const H(32),
+              StaggeredGrid.count(
+                crossAxisCount: 2,
+                mainAxisSpacing: 18,
+                crossAxisSpacing: 18,
+                children: kit.itens
+                    .map((e) => StaggeredGridTile.count(
+                          crossAxisCellCount: 1,
+                          mainAxisCellCount: 1,
+                          child: _kitItem(e),
+                        ))
+                    .toList(),
+              ),
+            ],
+          ),
         ),
       ),
     );

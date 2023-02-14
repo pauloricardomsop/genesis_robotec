@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:genesis_robotec/app/core/components/h.dart';
 import 'package:genesis_robotec/app/core/components/stream_out.dart';
 import 'package:genesis_robotec/app/core/components/w.dart';
@@ -21,29 +22,35 @@ class _KitsPageState extends State<KitsPage> {
 
   @override
   void initState() {
-    _productController.getKits();
+    _productController.getKits().then((_) async {
+      await Future.delayed(const Duration(seconds: 1));
+      FlutterNativeSplash.remove();
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: const Color(0xFFFFFFFF),
-        body: StreamOut<List<ProductKit>>(
-          stream: _productController.kits.listen,
-          child: (_, kits) => StreamOut<ProductUtils>(
-            stream: _productController.utils.listen,
-            child: (_, utils) => _body(
-              utils,
-              kits
-                  .where((e) => e.name
-                      .toLowerCase()
-                      .replaceAll(' ', '')
-                      .contains(utils.controller.value.text.toLowerCase().replaceAll(' ', '')))
-                  .toList(),
+    return SafeArea(
+      top: true,
+      child: Scaffold(
+          backgroundColor: const Color(0xFFFFFFFF),
+          body: StreamOut<List<ProductKit>>(
+            stream: _productController.kits.listen,
+            child: (_, kits) => StreamOut<ProductUtils>(
+              stream: _productController.utils.listen,
+              child: (_, utils) => _body(
+                utils,
+                kits
+                    .where((e) => e.name
+                        .toLowerCase()
+                        .replaceAll(' ', '')
+                        .contains(utils.controller.value.text.toLowerCase().replaceAll(' ', '')))
+                    .toList(),
+              ),
             ),
-          ),
-        ));
+          )),
+    );
   }
 
   Widget _body(ProductUtils utils, List<ProductKit> kits) {

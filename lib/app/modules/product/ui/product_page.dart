@@ -5,6 +5,7 @@ import 'package:genesis_robotec/app/core/components/w.dart';
 import 'package:genesis_robotec/app/core/theme/app_font_weight.dart';
 import 'package:genesis_robotec/app/modules/product/product_controller.dart';
 import 'package:genesis_robotec/app/modules/product/product_model.dart';
+import 'package:model_viewer_plus/model_viewer_plus.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class ProductPage extends StatefulWidget {
@@ -41,108 +42,131 @@ class _ProductPageState extends State<ProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: StreamOut(
-        stream: _productController.product.listen,
-        child: (_, product) => CustomScrollView(
-          slivers: [
-            SliverAppBar.large(
-              flexibleSpace: FlexibleSpaceBar(
-                background: Image.network(
-                  'https://miro.medium.com/max/640/0*i1v1In2Tn4Stnwnl.jpg',
-                  fit: BoxFit.cover,
+    return SafeArea(
+      top: true,
+      child: Scaffold(
+        body: StreamOut(
+          stream: _productController.product.listen,
+          child: (_, product) => CustomScrollView(
+            slivers: [
+              SliverAppBar.large(
+                flexibleSpace: FlexibleSpaceBar(
+                  title: Text(
+                    widget.product.name,
+                    style: TextStyle(
+                        fontFamily: 'SpaceGrotesk',
+                        fontSize: 32,
+                        fontWeight: AppFontWeight.bold,
+                        color: const Color(0xFF3B3B3B)),
+                  ),
+                  background: Image.network(
+                    'https://miro.medium.com/max/640/0*i1v1In2Tn4Stnwnl.jpg',
+                    fit: BoxFit.cover,
+                  ),
                 ),
+                // bottom: PreferredSize(
+                //   preferredSize: const Size(double.maxFinite, 24),
+                //   child: Container(
+                //     width: double.maxFinite,
+                //     height: 24,
+                //     decoration: const BoxDecoration(
+                //         color: Colors.white,
+                //         borderRadius: BorderRadius.only(
+                //             topLeft: Radius.circular(36), topRight: Radius.circular(36))),
+                //   ),
+                // ),
+                leading: InkWell(
+                    onTap: () => Navigator.pop(context), child: const Icon(Icons.arrow_back_ios)),
               ),
-              bottom: PreferredSize(
-                preferredSize: const Size(double.maxFinite, 24),
-                child: Container(
-                  width: double.maxFinite,
-                  height: 24,
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(36), topRight: Radius.circular(36))),
-                ),
-              ),
-              leading: InkWell(
-                  onTap: () => Navigator.pop(context), child: const Icon(Icons.arrow_back_ios)),
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate([
-                Container(
-                  padding: const EdgeInsets.only(bottom: 16, right: 16, left: 16),
-                  width: double.maxFinite,
-                  color: Colors.white,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            widget.product.name,
-                            style: TextStyle(
-                                fontFamily: 'SpaceGrotesk',
-                                fontSize: 32,
-                                fontWeight: AppFontWeight.bold,
-                                color: const Color(0xFF3B3B3B)),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              product.favorite = !product.favorite;
-                              _productController.updateKits();
-                            },
-                            child: Icon(
-                              product.favorite ? Icons.star : Icons.star_border,
-                              size: 32,
-                              color: product.favorite ? const Color(0xFFF2D027) : Colors.grey[500],
+              SliverList(
+                delegate: SliverChildListDelegate([
+                  Container(
+                    padding: const EdgeInsets.only(bottom: 16, right: 16, left: 16),
+                    width: double.maxFinite,
+                    color: Colors.white,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                product.favorite = !product.favorite;
+                                _productController.updateKits();
+                              },
+                              child: Icon(
+                                product.favorite ? Icons.star : Icons.star_border,
+                                size: 32,
+                                color:
+                                    product.favorite ? const Color(0xFFF2D027) : Colors.grey[500],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const H(16),
+                        Text(
+                          'Nam porttitor blandit accumsan. Ut vel dictum sem, a pretium dui. In malesuada enim in dolor euismod, id commodo mi consectetur. Curabitur at vestibulum nisi.',
+                          style: TextStyle(
+                              fontFamily: 'SpaceGrotesk',
+                              fontSize: 16,
+                              fontWeight: AppFontWeight.regular,
+                              color: const Color(0xFF3B3B3B)),
+                        ),
+                        const H(24),
+                        Row(
+                          children: [
+                            _button(
+                                onTap: () {},
+                                title: 'Passo a\npasso PDF',
+                                icon: Icons.archive_outlined,
+                                color: const Color(0xFF1F6DD2)),
+                            const W(32),
+                            _button(
+                                onTap: () {},
+                                title: 'Passo a\npasso 3D',
+                                icon: Icons.view_module_sharp,
+                                color: const Color(0xFFF25244)),
+                          ],
+                        ),
+                        const H(24),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: YoutubePlayer(
+                            controller: _controller,
+                            showVideoProgressIndicator: true,
+                            progressColors: const ProgressBarColors(
+                              playedColor: Colors.red,
+                              handleColor: Colors.redAccent,
                             ),
                           ),
-                        ],
-                      ),
-                      const H(16),
-                      Text(
-                        'Nam porttitor blandit accumsan. Ut vel dictum sem, a pretium dui. In malesuada enim in dolor euismod, id commodo mi consectetur. Curabitur at vestibulum nisi.',
-                        style: TextStyle(
-                            fontFamily: 'SpaceGrotesk',
-                            fontSize: 16,
-                            fontWeight: AppFontWeight.regular,
-                            color: const Color(0xFF3B3B3B)),
-                      ),
-                      const H(24),
-                      Row(
-                        children: [
-                          _button(
-                              onTap: () {},
-                              title: 'Passo a\npasso PDF',
-                              icon: Icons.archive_outlined,
-                              color: const Color(0xFF1F6DD2)),
-                          const W(32),
-                          _button(
-                              onTap: () {},
-                              title: 'Passo a\npasso 3D',
-                              icon: Icons.view_module_sharp,
-                              color: const Color(0xFFF25244)),
-                        ],
-                      ),
-                      const H(24),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: YoutubePlayer(
-                          controller: _controller,
-                          showVideoProgressIndicator: true,
-                          progressColors: const ProgressBarColors(
-                            playedColor: Colors.red,
-                            handleColor: Colors.redAccent,
-                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                )
-              ]),
-            )
-          ],
+                        const H(16),
+                        const Text('Explore o modelo 3D'),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            color: Colors.grey[100]!,
+                            width: double.maxFinite,
+                            height: 300,
+                            child: ModelViewer(
+                              backgroundColor: Colors.grey[100]!,
+                              src: 'assets/3d_models/tangram_3d.glb',
+                              alt: "A 3D model of an astronaut",
+                              ar: true,
+                              // arPlacement: ArPlacement.floor,
+                              // arScale: ArScale.fixed,
+                              arModes: const ['webxr'],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ]),
+              )
+            ],
+          ),
         ),
       ),
     );
