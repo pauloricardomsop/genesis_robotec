@@ -63,6 +63,8 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/activities/00_bloco_energia_solar/
+    - assets/activities/00_bloco_energia_solar/steps/
     - assets/activities/01_tangram_tridimensional/
     - assets/activities/01_tangram_tridimensional/steps/
     - assets/activities/02_relogio_geometrco/
