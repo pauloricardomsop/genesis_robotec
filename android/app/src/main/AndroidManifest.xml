@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.genesis_robotec.app">
+    package="com.genesisrobotec.app">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="Genesis Robotec"

@@ -12,7 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-
+  hive: ^2.0.5
+  hive_flutter: ^1.1.0
   cupertino_icons: ^1.0.2
   dio: ^4.0.6
   rxdart: ^0.27.7
@@ -20,21 +21,24 @@ dependencies:
   package_info_plus: ^3.0.2
   connectivity_plus: ^3.0.2
   flutter_launcher_icons: ^0.11.0
-  shared_preferences: ^2.0.17
-  coord_convert: ^1.0.0
-  wkt_parser: ^2.0.0
-  proj4dart: ^2.1.0
-  flutter_map: ^3.1.0
   flutter_staggered_grid_view: ^0.6.2
   youtube_player_flutter: ^8.1.2
   flutter_native_splash: ^2.2.16
   model_viewer_plus: ^1.5.0
+  pdfx: ^2.3.0
+  firebase_core: ^2.4.1
+  firebase_storage: ^11.0.11
+  flutter_archive: ^5.0.0
+  path_provider: ^2.0.13
+  internet_file: ^1.2.0
+  url_launcher: ^6.1.10
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^2.0.0
+  hive_generator: ^1.1.2
+  build_runner: ^2.1.7
 
 flutter_native_splash:
   android: true
@@ -57,94 +61,96 @@ flutter_icons:
   flutter_test:
     sdk: flutter
 
+  # flutter pub run flutter_launcher_icons:main
 
 flutter:
 
   uses-material-design: true
 
-  assets:
-    - assets/activities/00_bloco_energia_solar/
-    - assets/activities/00_bloco_energia_solar/steps/
-    - assets/activities/01_tangram_tridimensional/
-    - assets/activities/01_tangram_tridimensional/steps/
-    - assets/activities/02_relogio_geometrco/
-    - assets/activities/02_relogio_geometrco/steps/
-    - assets/activities/03_arvore/
-    - assets/activities/03_arvore/steps/
-    - assets/activities/04_roboticon/
-    - assets/activities/04_roboticon/steps/
-    - assets/activities/05_carro/
-    - assets/activities/05_carro/steps/
-    - assets/activities/06_torre/
-    - assets/activities/06_torre/steps/
-    - assets/activities/07_flor/
-    - assets/activities/07_flor/steps/
-    - assets/activities/08_lixeira/
-    - assets/activities/08_lixeira/steps/
-    - assets/activities/09_roda_gigante/
-    - assets/activities/09_roda_gigante/steps/
-    - assets/activities/10_mecanismo_relogio/
-    - assets/activities/10_mecanismo_relogio/steps/
-    - assets/activities/11_cancela_estacionamento/
-    - assets/activities/11_cancela_estacionamento/steps/
-    - assets/activities/12_cachorro/
-    - assets/activities/12_cachorro/steps/
-    - assets/activities/13_lanterna/
-    - assets/activities/13_lanterna/steps/
-    - assets/activities/14_aviao/
-    - assets/activities/14_aviao/steps/
-    - assets/activities/15_barco/
-    - assets/activities/15_barco/steps/
-    - assets/activities/16_caminhao/
-    - assets/activities/16_caminhao/steps/
-    - assets/activities/17_relogio_solar/
-    - assets/activities/17_relogio_solar/steps/
-    - assets/activities/18_locomotiva/
-    - assets/activities/18_locomotiva/steps/
-    - assets/activities/19_balanca/
-    - assets/activities/19_balanca/steps/
-    - assets/activities/20_fases_lua/
-    - assets/activities/20_fases_lua/steps/
-    - assets/activities/21_elevador/
-    - assets/activities/21_elevador/steps/
-    - assets/activities/22_passaro/
-    - assets/activities/22_passaro/steps/
-    - assets/activities/23_planta_carnivora/
-    - assets/activities/23_planta_carnivora/steps/
-    - assets/activities/24_caminhonete/
-    - assets/activities/24_caminhonete/steps/
-    - assets/activities/25_anemometro/
-    - assets/activities/25_anemometro/steps/
-    - assets/activities/26_trator/
-    - assets/activities/26_trator/steps/
-    - assets/activities/27_teleferico/
-    - assets/activities/27_teleferico/steps/
-    - assets/activities/28_maquina_animacao/
-    - assets/activities/28_maquina_animacao/steps/
-    - assets/activities/29_gerador_eolico/
-    - assets/activities/29_gerador_eolico/steps/
-    - assets/activities/30_rotacao_transalacao_terra/
-    - assets/activities/30_rotacao_transalacao_terra/steps/
-    - assets/activities/31_carro_solar/
-    - assets/activities/31_carro_solar/steps/
-    - assets/activities/32_satelite/
-    - assets/activities/32_satelite/steps/
-    - assets/activities/33_aranha/
-    - assets/activities/33_aranha/steps/
-    - assets/activities/34_girassol/
-    - assets/activities/34_girassol/steps/
-    - assets/activities/35_esteira_fabrica/
-    - assets/activities/35_esteira_fabrica/steps/
-    - assets/activities/36_poste/
-    - assets/activities/36_poste/steps/
-    - assets/activities/37_chip/
-    - assets/activities/37_chip/steps/
-    - assets/activities/38_futbot/
-    - assets/activities/38_futbot/steps/
-    - assets/activities/39_roboticon_2/
-    - assets/activities/39_roboticon_2/steps/
-    - assets/activities/40_scorpion/
-    - assets/activities/40_scorpion/steps/
+  # assets:
+    # - assets/
+    # - assets/activities/00_bloco_energia_solar/
+    # - assets/activities/00_bloco_energia_solar/steps/
+    # - assets/activities/01_tangram_tridimensional/
+    # - assets/activities/01_tangram_tridimensional/steps/
+    # - assets/activities/02_relogio_geometrco/
+    # - assets/activities/02_relogio_geometrco/steps/
+    # - assets/activities/03_arvore/
+    # - assets/activities/03_arvore/steps/
+    # - assets/activities/04_roboticon/
+    # - assets/activities/04_roboticon/steps/
+    # - assets/activities/05_carro/
+    # - assets/activities/05_carro/steps/
+    # - assets/activities/06_torre/
+    # - assets/activities/06_torre/steps/
+    # - assets/activities/07_flor/
+    # - assets/activities/07_flor/steps/
+    # - assets/activities/08_lixeira/
+    # - assets/activities/08_lixeira/steps/
+    # - assets/activities/09_roda_gigante/
+    # - assets/activities/09_roda_gigante/steps/
+    # - assets/activities/10_mecanismo_relogio/
+    # - assets/activities/10_mecanismo_relogio/steps/
+    # - assets/activities/11_cancela_estacionamento/
+    # - assets/activities/11_cancela_estacionamento/steps/
+    # - assets/activities/12_cachorro/
+    # - assets/activities/12_cachorro/steps/
+    # - assets/activities/13_lanterna/
+    # - assets/activities/13_lanterna/steps/
+    # - assets/activities/14_aviao/
+    # - assets/activities/14_aviao/steps/
+    # - assets/activities/15_barco/
+    # - assets/activities/15_barco/steps/
+    # - assets/activities/16_caminhao/
+    # - assets/activities/16_caminhao/steps/
+    # - assets/activities/17_relogio_solar/
+    # - assets/activities/17_relogio_solar/steps/
+    # - assets/activities/18_locomotiva/
+    # - assets/activities/18_locomotiva/steps/
+    # - assets/activities/19_balanca/
+    # - assets/activities/19_balanca/steps/
+    # - assets/activities/20_fases_lua/
+    # - assets/activities/20_fases_lua/steps/
+    # - assets/activities/21_elevador/
+    # - assets/activities/21_elevador/steps/
+    # - assets/activities/22_passaro/
+    # - assets/activities/22_passaro/steps/
+    # - assets/activities/23_planta_carnivora/
+    # - assets/activities/23_planta_carnivora/steps/
+    # - assets/activities/24_caminhonete/
+    # - assets/activities/24_caminhonete/steps/
+    # - assets/activities/25_anemometro/
+    # - assets/activities/25_anemometro/steps/
+    # - assets/activities/26_trator/
+    # - assets/activities/26_trator/steps/
+    # - assets/activities/27_teleferico/
+    # - assets/activities/27_teleferico/steps/
+    # - assets/activities/28_maquina_animacao/
+    # - assets/activities/28_maquina_animacao/steps/
+    # - assets/activities/29_gerador_eolico/
+    # - assets/activities/29_gerador_eolico/steps/
+    # - assets/activities/30_rotacao_transalacao_terra/
+    # - assets/activities/30_rotacao_transalacao_terra/steps/
+    # - assets/activities/31_carro_solar/
+    # - assets/activities/31_carro_solar/steps/
+    # - assets/activities/32_satelite/
+    # - assets/activities/32_satelite/steps/
+    # - assets/activities/33_aranha/
+    # - assets/activities/33_aranha/steps/
+    # - assets/activities/34_girassol/
+    # - assets/activities/34_girassol/steps/
+    # - assets/activities/35_esteira_fabrica/
+    # - assets/activities/35_esteira_fabrica/steps/
+    # - assets/activities/36_poste/
+    # - assets/activities/36_poste/steps/
+    # - assets/activities/37_chip/
+    # - assets/activities/37_chip/steps/
+    # - assets/activities/38_futbot/
+    # - assets/activities/38_futbot/steps/
+    # - assets/activities/39_roboticon_2/
+    # - assets/activities/39_roboticon_2/steps/
+    # - assets/activities/40_scorpion/
+    # - assets/activities/40_scorpion/steps/
 
   fonts:
     - family: SpaceGrotesk

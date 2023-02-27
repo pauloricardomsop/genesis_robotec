@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "231699862816",
+    "project_id": "genesis-robotec",
+    "storage_bucket": "genesis-robotec.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:231699862816:android:1c3b2703c19bcbda253345",
+        "android_client_info": {
+          "package_name": "com.genesisrobotec.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "231699862816-vgt9aef2nfb3v9kndrjrbeglichkuv1n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfLL0ZMpdUKQB-Ssl9Uz49Ea0Pbb8SVPo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "231699862816-vgt9aef2nfb3v9kndrjrbeglichkuv1n.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "231699862816-dnto6cg7h4o0g7ifoth842mrsf2kbgfl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.genesisRobotec"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

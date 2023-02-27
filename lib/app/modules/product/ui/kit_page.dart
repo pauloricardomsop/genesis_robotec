@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:genesis_robotec/app/core/components/h.dart';
 import 'package:genesis_robotec/app/core/components/stream_out.dart';
+import 'package:genesis_robotec/app/core/components/w.dart';
 import 'package:genesis_robotec/app/core/global_resources/global_resources.dart';
 import 'package:genesis_robotec/app/core/theme/app_font_weight.dart';
 import 'package:genesis_robotec/app/modules/product/product_model.dart';
@@ -10,7 +11,7 @@ import 'package:genesis_robotec/app/modules/product/ui/product_page.dart';
 import '../product_controller.dart';
 
 class KitPage extends StatefulWidget {
-  final ProductKit kit;
+  final Kit kit;
 
   const KitPage(this.kit, {super.key});
 
@@ -33,10 +34,10 @@ class _KitPageState extends State<KitPage> {
       top: true,
       child: Scaffold(
         backgroundColor: const Color(0xFFFFFFFF),
-        body: StreamOut<ProductKit>(
+        body: StreamOut<Kit>(
           stream: _productController.kit.listen,
           child: (_, kit) => ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 36),
+            padding: const EdgeInsets.all(16),
             children: [
               Align(
                 alignment: Alignment.centerLeft,
@@ -57,7 +58,7 @@ class _KitPageState extends State<KitPage> {
                 crossAxisCount: 2,
                 mainAxisSpacing: 18,
                 crossAxisSpacing: 18,
-                children: kit.itens
+                children: kit.products
                     .map((e) => StaggeredGridTile.count(
                           crossAxisCellCount: 1,
                           mainAxisCellCount: 1,
@@ -89,22 +90,22 @@ class _KitPageState extends State<KitPage> {
                 children: [
                   Expanded(
                       flex: 2,
-                      child: SizedBox(
+                      child: Container(
                         width: double.maxFinite,
                         height: double.maxFinite,
-                        child: Image.network(
-                          'https://miro.medium.com/max/640/0*i1v1In2Tn4Stnwnl.jpg',
-                          fit: BoxFit.cover,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: product.imageProvider, fit: BoxFit.cover),
                         ),
                       )),
                   Expanded(
                       child: Container(
                     width: double.maxFinite,
                     color: Colors.white,
-                    child: Stack(
+                    child: Row(
                       children: [
-                        Align(
-                          alignment: Alignment.center,
+                        const W(12),
+                        Expanded(
                           child: Text(
                             product.name,
                             style: TextStyle(
@@ -114,15 +115,11 @@ class _KitPageState extends State<KitPage> {
                                 fontWeight: AppFontWeight.regular),
                           ),
                         ),
-                        const Align(
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: EdgeInsets.all(16),
-                              child: Icon(
-                                Icons.arrow_forward_ios,
-                                size: 14,
-                              ),
-                            )),
+                        const Icon(
+                          Icons.arrow_forward_ios,
+                          size: 14,
+                        ),
+                        const W(12),
                       ],
                     ),
                   ))

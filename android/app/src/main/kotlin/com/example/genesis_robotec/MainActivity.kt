@@ -1,4 +1,4 @@
-package com.genesis_robotec.app
+package com.genesisrobotec.app
 
 import io.flutter.embedding.android.FlutterActivity
 

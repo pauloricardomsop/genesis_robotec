@@ -1,68 +1,102 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
-class ProductKit {
+part 'product_model.g.dart';
+
+@HiveType(typeId: 0)
+class Kit extends HiveObject {
+  @HiveField(0)
   final String name;
-  bool favorite;
-  final List<Product> itens;
-  ProductKit({required this.name, required this.itens, required this.favorite});
+  @HiveField(1)
+  final String description;
+  @HiveField(2)
+  final List<Product> products;
+  @HiveField(3)
+  bool favorite = false;
+  @HiveField(4)
+  int version;
+  @HiveField(5)
+  bool downloaded = false;
 
-  factory ProductKit.fromMap(Map<String, dynamic> map) {
-    return ProductKit(
-      name: map['name'] as String,
-      favorite: map['favorite'] as bool,
-      itens: map['itens'].map<Product>((e) => Product.fromMap(e)).toList(),
+  Kit(
+      {required this.name,
+      required this.description,
+      required this.products,
+      required this.version});
+
+  factory Kit.fromJson(Map<String, dynamic> json) {
+    return Kit(
+      name: json['name'],
+      description: json['description'],
+      version: json['version'],
+      products: json['products'].map<Product>((v) => Product.fromJson(v)).toList(),
     );
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'name': name,
-      'favorite': favorite,
-      'itens': itens.map((x) => x.toMap()).toList(),
-    };
   }
 }
 
-class Product {
-  final String name;
-  final String image;
-  bool favorite;
-  final String video;
-  final String pdf;
-  final String model3d;
+@HiveType(typeId: 1)
+class Product extends HiveObject {
+  @HiveField(0)
+  String name;
+  @HiveField(1)
+  String description;
+  @HiveField(2)
+  String pdf;
+  @HiveField(3)
+  String image;
+  @HiveField(4)
+  String model;
+  @HiveField(5)
+  String video;
+  @HiveField(6)
+  List<Step> steps;
+  @HiveField(7)
+  bool favorite = false;
+  @HiveField(8)
+  bool downloaded = false;
+  @HiveField(9)
+  String kitName;
 
-  Product({
-    required this.name,
-    required this.image,
-    required this.favorite,
-    required this.video,
-    required this.pdf,
-    required this.model3d,
-  });
+  dynamic get imageProvider => downloaded ? FileImage(File(image)) : NetworkImage(image);
 
-  factory Product.fromMap(Map<String, dynamic> map) {
+  Product(
+      {required this.name,
+      required this.description,
+      required this.pdf,
+      required this.image,
+      required this.model,
+      required this.video,
+      required this.kitName,
+      required this.steps});
+
+  factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      name: map['name'] as String,
-      image: map['image'] as String,
-      favorite: map['favorite'] as bool,
-      video: map['video'] as String,
-      pdf: map['pdf'] as String,
-      model3d: map['model3d'] as String,
-    );
+        name: json['name'],
+        description: json['description'],
+        pdf: json['pdf'],
+        image: json['image'],
+        model: json['model'],
+        video: json['video'],
+        steps: json['steps'].map<Step>((v) => Step(v)).toList(),
+        kitName: json['kitName']);
   }
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'name': name,
-      'image': image,
-      'favorite': favorite,
-      'video': video,
-      'pdf': pdf,
-      'model3d': model3d,
-    };
-  }
+  int get stepsCompletedLength => steps.where((e) => e.completed).toList().length;
+  double get stepsPercentagem =>
+      stepsCompletedLength == 0 ? 0.0 : (stepsCompletedLength ~/ steps.length).toDouble();
+}
+
+@HiveType(typeId: 2)
+class Step extends HiveObject {
+  @HiveField(0)
+  String model;
+  @HiveField(1)
+  bool completed = false;
+  @HiveField(2)
+  bool downloaded = false;
+  Step(this.model);
 }
 
 class ProductUtils {

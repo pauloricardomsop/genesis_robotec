@@ -7,7 +7,6 @@ import 'package:genesis_robotec/app/core/global_resources/global_resources.dart'
 import 'package:genesis_robotec/app/core/theme/app_font_weight.dart';
 import 'package:genesis_robotec/app/modules/product/product_model.dart';
 import 'package:genesis_robotec/app/modules/product/ui/kit_page.dart';
-
 import '../product_controller.dart';
 
 class KitsPage extends StatefulWidget {
@@ -35,7 +34,7 @@ class _KitsPageState extends State<KitsPage> {
       top: true,
       child: Scaffold(
           backgroundColor: const Color(0xFFFFFFFF),
-          body: StreamOut<List<ProductKit>>(
+          body: StreamOut<List<Kit>>(
             stream: _productController.kits.listen,
             child: (_, kits) => StreamOut<ProductUtils>(
               stream: _productController.utils.listen,
@@ -53,9 +52,9 @@ class _KitsPageState extends State<KitsPage> {
     );
   }
 
-  Widget _body(ProductUtils utils, List<ProductKit> kits) {
+  Widget _body(ProductUtils utils, List<Kit> kits) {
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 36),
+      padding: const EdgeInsets.all(16),
       children: [
         const Align(
           alignment: Alignment.centerRight,
@@ -130,7 +129,7 @@ class _KitsPageState extends State<KitsPage> {
     );
   }
 
-  Widget _kitItem(ProductKit kit) {
+  Widget _kitItem(Kit kit) {
     return InkWell(
       onTap: () => push(context, KitPage(kit)),
       child: Container(
@@ -155,20 +154,21 @@ class _KitsPageState extends State<KitsPage> {
                       child: Stack(
                         children: [
                           Row(
-                            children: kit.itens
+                            children: kit.products
                                 .map((e) => Expanded(
                                       child: Row(
                                         children: [
                                           Expanded(
-                                            child: SizedBox(
+                                            child: Container(
                                               height: double.maxFinite,
-                                              child: Image.network(
-                                                'https://miro.medium.com/max/640/0*i1v1In2Tn4Stnwnl.jpg',
-                                                fit: BoxFit.cover,
+                                              decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                    image: e.imageProvider,
+                                                    fit: BoxFit.cover),
                                               ),
                                             ),
                                           ),
-                                          if (e != kit.itens.last)
+                                          if (e != kit.products.last)
                                             Container(
                                               height: double.maxFinite,
                                               width: 3,
