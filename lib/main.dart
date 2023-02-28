@@ -17,8 +17,8 @@ void main() async {
   await ConnectivyService.init();
   await HiveService.init();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarBrightness: Brightness.light,
-    statusBarIconBrightness: Brightness.dark,
+    statusBarBrightness: Brightness.dark,
+    statusBarIconBrightness: Brightness.light,
   ));
 
   runApp(const AppWidget());

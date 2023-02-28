@@ -51,7 +51,7 @@ class Product extends HiveObject {
   @HiveField(5)
   String video;
   @HiveField(6)
-  List<Step> steps;
+  List<ProductStep> steps;
   @HiveField(7)
   bool favorite = false;
   @HiveField(8)
@@ -79,24 +79,24 @@ class Product extends HiveObject {
         image: json['image'],
         model: json['model'],
         video: json['video'],
-        steps: json['steps'].map<Step>((v) => Step(v)).toList(),
+        steps: json['steps'].map<ProductStep>((v) => ProductStep(v)).toList(),
         kitName: json['kitName']);
   }
 
   int get stepsCompletedLength => steps.where((e) => e.completed).toList().length;
   double get stepsPercentagem =>
-      stepsCompletedLength == 0 ? 0.0 : (stepsCompletedLength ~/ steps.length).toDouble();
+      stepsCompletedLength == 0 ? 0.0 : (stepsCompletedLength / steps.length).toDouble();
 }
 
 @HiveType(typeId: 2)
-class Step extends HiveObject {
+class ProductStep extends HiveObject {
   @HiveField(0)
   String model;
   @HiveField(1)
   bool completed = false;
   @HiveField(2)
   bool downloaded = false;
-  Step(this.model);
+  ProductStep(this.model);
 }
 
 class ProductUtils {

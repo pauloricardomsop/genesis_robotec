@@ -4,9 +4,11 @@ import 'package:genesis_robotec/app/core/components/h.dart';
 import 'package:genesis_robotec/app/core/components/stream_out.dart';
 import 'package:genesis_robotec/app/core/components/w.dart';
 import 'package:genesis_robotec/app/core/global_resources/global_resources.dart';
+import 'package:genesis_robotec/app/core/services/connectivity_service.dart';
 import 'package:genesis_robotec/app/core/theme/app_font_weight.dart';
 import 'package:genesis_robotec/app/modules/product/product_model.dart';
 import 'package:genesis_robotec/app/modules/product/ui/kit_page.dart';
+
 import '../product_controller.dart';
 
 class KitsPage extends StatefulWidget {
@@ -18,6 +20,7 @@ class KitsPage extends StatefulWidget {
 
 class _KitsPageState extends State<KitsPage> {
   final ProductController _productController = ProductController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -30,25 +33,30 @@ class _KitsPageState extends State<KitsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: true,
-      child: Scaffold(
-          backgroundColor: const Color(0xFFFFFFFF),
-          body: StreamOut<List<Kit>>(
-            stream: _productController.kits.listen,
-            child: (_, kits) => StreamOut<ProductUtils>(
-              stream: _productController.utils.listen,
-              child: (_, utils) => _body(
-                utils,
-                kits
-                    .where((e) => e.name
-                        .toLowerCase()
-                        .replaceAll(' ', '')
-                        .contains(utils.controller.value.text.toLowerCase().replaceAll(' ', '')))
-                    .toList(),
+    return Container(
+      color: Colors.black,
+      child: SafeArea(
+        top: true,
+        child: Scaffold(
+            key: _scaffoldKey,
+            endDrawer: const Drawer(),
+            backgroundColor: const Color(0xFFFFFFFF),
+            body: StreamOut<List<Kit>>(
+              stream: _productController.kits.listen,
+              child: (_, kits) => StreamOut<ProductUtils>(
+                stream: _productController.utils.listen,
+                child: (_, utils) => _body(
+                  utils,
+                  kits
+                      .where((e) => e.name
+                          .toLowerCase()
+                          .replaceAll(' ', '')
+                          .contains(utils.controller.value.text.toLowerCase().replaceAll(' ', '')))
+                      .toList(),
+                ),
               ),
-            ),
-          )),
+            )),
+      ),
     );
   }
 
@@ -56,9 +64,27 @@ class _KitsPageState extends State<KitsPage> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        const Align(
-          alignment: Alignment.centerRight,
-          child: Icon(Icons.dehaze),
+        Row(
+          children: [
+            const Text(
+              'Genesis Robotec',
+              style: TextStyle(
+                  fontFamily: 'SpaceGrotesk',
+                  fontSize: 20,
+                  color: Color(0xFF3B3B3B),
+                  fontWeight: FontWeight.w500),
+            ),
+            const Spacer(),
+            InkWell(
+              onTap: () {
+                _scaffoldKey.currentState!.openEndDrawer();
+              },
+              child: const Align(
+                alignment: Alignment.centerRight,
+                child: Icon(Icons.dehaze),
+              ),
+            ),
+          ],
         ),
         const H(16),
         ClipRRect(
@@ -153,31 +179,34 @@ class _KitsPageState extends State<KitsPage> {
                       height: 180,
                       child: Stack(
                         children: [
-                          Row(
-                            children: kit.products
-                                .map((e) => Expanded(
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Container(
-                                              height: double.maxFinite,
-                                              decoration: BoxDecoration(
-                                                image: DecorationImage(
-                                                    image: e.imageProvider,
-                                                    fit: BoxFit.cover),
+                          StreamOut(
+                            stream: ConnectivyService.connection.listen,
+                            child: (_, hasConnection) => Row(
+                              children: kit.products
+                                  .where((e) => hasConnection ? true : e.downloaded)
+                                  .map((e) => Expanded(
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Container(
+                                                height: double.maxFinite,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      image: e.imageProvider, fit: BoxFit.cover),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          if (e != kit.products.last)
-                                            Container(
-                                              height: double.maxFinite,
-                                              width: 3,
-                                              color: Colors.white,
-                                            )
-                                        ],
-                                      ),
-                                    ))
-                                .toList(),
+                                            if (e != kit.products.last)
+                                              Container(
+                                                height: double.maxFinite,
+                                                width: 3,
+                                                color: Colors.white,
+                                              )
+                                          ],
+                                        ),
+                                      ))
+                                  .toList(),
+                            ),
                           ),
                           Align(
                             alignment: Alignment.topRight,

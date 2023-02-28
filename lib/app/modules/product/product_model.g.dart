@@ -50,9 +50,7 @@ class KitAdapter extends TypeAdapter<Kit> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is KitAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      other is KitAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }
 
 class ProductAdapter extends TypeAdapter<Product> {
@@ -73,7 +71,7 @@ class ProductAdapter extends TypeAdapter<Product> {
       model: fields[4] as String,
       video: fields[5] as String,
       kitName: fields[9] as String,
-      steps: (fields[6] as List).cast<Step>(),
+      steps: (fields[6] as List).cast<ProductStep>(),
     )
       ..favorite = fields[7] as bool
       ..downloaded = fields[8] as bool;
@@ -111,22 +109,20 @@ class ProductAdapter extends TypeAdapter<Product> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ProductAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      other is ProductAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }
 
-class StepAdapter extends TypeAdapter<Step> {
+class StepAdapter extends TypeAdapter<ProductStep> {
   @override
   final int typeId = 2;
 
   @override
-  Step read(BinaryReader reader) {
+  ProductStep read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Step(
+    return ProductStep(
       fields[0] as String,
     )
       ..completed = fields[1] as bool
@@ -134,7 +130,7 @@ class StepAdapter extends TypeAdapter<Step> {
   }
 
   @override
-  void write(BinaryWriter writer, Step obj) {
+  void write(BinaryWriter writer, ProductStep obj) {
     writer
       ..writeByte(3)
       ..writeByte(0)
@@ -151,7 +147,5 @@ class StepAdapter extends TypeAdapter<Step> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is StepAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+      other is StepAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 }

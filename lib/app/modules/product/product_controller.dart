@@ -89,19 +89,21 @@ class ProductController {
         step.model = await downloadArchive('step/${product.steps.indexOf(step)}.glb', step.model);
       }
       product.downloaded = true;
-      // await product.save();
       for (var step in product.steps) {
         step.downloaded = true;
-        // await step.save();
       }
-      for (var kit in ProductRepository.getKits()) {
-        if (kit.name == product.kitName) {
-          kit.downloaded = true;
-          await kit.save();
-        }
-      }
+      await saveKit(product);
     } catch (e) {
       throw Error();
+    }
+  }
+
+  Future<void> saveKit(Product product) async {
+    for (var kit in ProductRepository.getKits()) {
+      if (kit.name == product.kitName) {
+        kit.downloaded = true;
+        kit.save();
+      }
     }
   }
 

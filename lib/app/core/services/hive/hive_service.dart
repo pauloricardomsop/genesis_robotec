@@ -17,6 +17,6 @@ class HiveService {
   static void registerAdapters() {
     Hive.registerAdapter<Kit>(KitAdapter());
     Hive.registerAdapter<Product>(ProductAdapter());
-    Hive.registerAdapter<Step>(StepAdapter());
+    Hive.registerAdapter<ProductStep>(StepAdapter());
   }
 }

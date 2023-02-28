@@ -4,6 +4,7 @@ import 'package:genesis_robotec/app/core/components/h.dart';
 import 'package:genesis_robotec/app/core/components/stream_out.dart';
 import 'package:genesis_robotec/app/core/components/w.dart';
 import 'package:genesis_robotec/app/core/global_resources/global_resources.dart';
+import 'package:genesis_robotec/app/core/services/connectivity_service.dart';
 import 'package:genesis_robotec/app/core/theme/app_font_weight.dart';
 import 'package:genesis_robotec/app/modules/product/product_model.dart';
 import 'package:genesis_robotec/app/modules/product/ui/product_page.dart';
@@ -30,43 +31,50 @@ class _KitPageState extends State<KitPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: true,
-      child: Scaffold(
-        backgroundColor: const Color(0xFFFFFFFF),
-        body: StreamOut<Kit>(
-          stream: _productController.kit.listen,
-          child: (_, kit) => ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: InkWell(
-                    onTap: () => Navigator.pop(context), child: const Icon(Icons.arrow_back_ios)),
-              ),
-              const H(24),
-              Text(
-                'Kit ${kit.name}',
-                style: TextStyle(
-                    fontFamily: 'SpaceGrotesk',
-                    fontSize: 24,
-                    color: const Color(0xFF3B3B3B),
-                    fontWeight: AppFontWeight.bold),
-              ),
-              const H(32),
-              StaggeredGrid.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 18,
-                crossAxisSpacing: 18,
-                children: kit.products
-                    .map((e) => StaggeredGridTile.count(
-                          crossAxisCellCount: 1,
-                          mainAxisCellCount: 1,
-                          child: _kitItem(e),
-                        ))
-                    .toList(),
-              ),
-            ],
+    return Container(
+      color: Colors.black,
+      child: SafeArea(
+        top: true,
+        child: Scaffold(
+          backgroundColor: const Color(0xFFFFFFFF),
+          body: StreamOut<Kit>(
+            stream: _productController.kit.listen,
+            child: (_, kit) => ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: InkWell(
+                      onTap: () => Navigator.pop(context), child: const Icon(Icons.arrow_back_ios)),
+                ),
+                const H(24),
+                Text(
+                  'Kit ${kit.name}',
+                  style: TextStyle(
+                      fontFamily: 'SpaceGrotesk',
+                      fontSize: 24,
+                      color: const Color(0xFF3B3B3B),
+                      fontWeight: AppFontWeight.bold),
+                ),
+                const H(32),
+                StreamOut(
+                  stream: ConnectivyService.connection.listen,
+                  child: (_, hasConnection) => StaggeredGrid.count(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 18,
+                    crossAxisSpacing: 18,
+                    children: kit.products
+                        .where((e) => hasConnection ? true : e.downloaded)
+                        .map((e) => StaggeredGridTile.count(
+                              crossAxisCellCount: 1,
+                              mainAxisCellCount: 1,
+                              child: _kitItem(e),
+                            ))
+                        .toList(),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -94,8 +102,7 @@ class _KitPageState extends State<KitPage> {
                         width: double.maxFinite,
                         height: double.maxFinite,
                         decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: product.imageProvider, fit: BoxFit.cover),
+                          image: DecorationImage(image: product.imageProvider, fit: BoxFit.cover),
                         ),
                       )),
                   Expanded(
