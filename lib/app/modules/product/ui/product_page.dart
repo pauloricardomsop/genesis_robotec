@@ -6,7 +6,6 @@ import 'package:genesis_robotec/app/core/services/connectivity_service.dart';
 import 'package:genesis_robotec/app/core/theme/app_font_weight.dart';
 import 'package:genesis_robotec/app/modules/product/product_controller.dart';
 import 'package:genesis_robotec/app/modules/product/product_model.dart';
-import 'package:genesis_robotec/app/modules/product/product_repository.dart';
 import 'package:genesis_robotec/app/modules/product/ui/product_3d_model_page.dart';
 import 'package:genesis_robotec/app/modules/product/ui/product_pdf_page.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -222,7 +221,10 @@ class _ProductPageState extends State<ProductPage> {
     return IgnorePointer(
       ignoring: !enable,
       child: InkWell(
-        onTap: () => _onTapStep(product, step),
+        onTap: () async {
+          await push(context, Product3dModelPage(widget.product, product.steps, step));
+          setState(() {});
+        },
         child: IgnorePointer(
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 8),
@@ -269,23 +271,6 @@ class _ProductPageState extends State<ProductPage> {
     final i = product.steps.indexOf(step);
     if (product.steps[i - 1].completed) return true;
     return false;
-  }
-
-  Future<void> _onTapStep(Product product, ProductStep step) async {
-    final next = await push(
-        context,
-        Product3dModelPage('Passo ${product.steps.indexOf(step) + 1}',
-            '${step.downloaded ? 'file:' : ''}${step.model}', product.steps.last != step));
-    step.completed = true;
-    setState(() {});
-    for (var kit in ProductRepository.getKits()) {
-      if (kit.name == product.kitName) {
-        kit.save();
-      }
-    }
-    if (next) {
-      _onTapStep(product, product.steps[product.steps.indexOf(step) + 1]);
-    }
   }
 
   Widget _pdfButton() {

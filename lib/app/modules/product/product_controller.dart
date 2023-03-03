@@ -30,6 +30,8 @@ class ProductController {
   final AppStream<Kit> kit = AppStream<Kit>();
   final AppStream<Product> product = AppStream<Product>();
   final AppStream<ProductUtils> utils = AppStream<ProductUtils>.seeded(ProductUtils());
+  final AppStream<ProductStep> stepStream = AppStream<ProductStep>();
+
 
   Future<void> getKits() async {
     final response = await ProductProvider.getKits();

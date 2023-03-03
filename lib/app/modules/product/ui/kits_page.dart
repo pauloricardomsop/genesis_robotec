@@ -20,7 +20,6 @@ class KitsPage extends StatefulWidget {
 
 class _KitsPageState extends State<KitsPage> {
   final ProductController _productController = ProductController();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -33,59 +32,27 @@ class _KitsPageState extends State<KitsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black,
-      child: SafeArea(
-        top: true,
-        child: Scaffold(
-            key: _scaffoldKey,
-            endDrawer: const Drawer(),
-            backgroundColor: const Color(0xFFFFFFFF),
-            body: StreamOut<List<Kit>>(
-              stream: _productController.kits.listen,
-              child: (_, kits) => StreamOut<ProductUtils>(
-                stream: _productController.utils.listen,
-                child: (_, utils) => _body(
-                  utils,
-                  kits
-                      .where((e) => e.name
-                          .toLowerCase()
-                          .replaceAll(' ', '')
-                          .contains(utils.controller.value.text.toLowerCase().replaceAll(' ', '')))
-                      .toList(),
-                ),
-              ),
-            )),
+    return StreamOut<List<Kit>>(
+      stream: _productController.kits.listen,
+      child: (_, kits) => StreamOut<ProductUtils>(
+        stream: _productController.utils.listen,
+        child: (_, utils) => _body(
+          utils,
+          kits
+              .where((e) => e.name
+                  .toLowerCase()
+                  .replaceAll(' ', '')
+                  .contains(utils.controller.value.text.toLowerCase().replaceAll(' ', '')))
+              .toList(),
+        ),
       ),
     );
   }
 
   Widget _body(ProductUtils utils, List<Kit> kits) {
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       children: [
-        Row(
-          children: [
-            const Text(
-              'Genesis Robotec',
-              style: TextStyle(
-                  fontFamily: 'SpaceGrotesk',
-                  fontSize: 20,
-                  color: Color(0xFF3B3B3B),
-                  fontWeight: FontWeight.w500),
-            ),
-            const Spacer(),
-            InkWell(
-              onTap: () {
-                _scaffoldKey.currentState!.openEndDrawer();
-              },
-              child: const Align(
-                alignment: Alignment.centerRight,
-                child: Icon(Icons.dehaze),
-              ),
-            ),
-          ],
-        ),
         const H(16),
         ClipRRect(
           borderRadius: BorderRadius.circular(24),

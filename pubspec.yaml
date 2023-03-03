@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 publish_to: 'none'
 
-version: 0.0.1
+version: 0.0.3
 
 environment:
   sdk: '>=2.18.6 <3.0.0'
@@ -47,7 +47,7 @@ flutter_native_splash:
   color: "#FFFFFF"
   image: assets/launcher/splash.png
   android_12:
-    image: assets/launcher/splash.png
+    image: assets/launcher/splash_android_12.png
     icon_background_color: "#FFFFFF"
 
 flutter_icons:
