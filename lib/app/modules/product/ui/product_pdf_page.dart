@@ -29,6 +29,12 @@ class _ProductPdfPageState extends State<ProductPdfPage> {
   }
 
   @override
+  void dispose() {
+    pdfPinchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.black,

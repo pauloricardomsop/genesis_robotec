@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:genesis_robotec/app/core/dialogs/product_download_dialog.dart';
 import 'package:genesis_robotec/app/core/models/app_stream.dart';
 import 'package:genesis_robotec/app/core/services/notification_service.dart';
-import 'package:genesis_robotec/app/core/utils/dialog_utils.dart';
 import 'package:genesis_robotec/app/modules/product/product_model.dart';
 import 'package:genesis_robotec/app/modules/product/product_provider.dart';
 import 'package:genesis_robotec/app/modules/product/product_repository.dart';
@@ -31,7 +33,8 @@ class ProductController {
   final AppStream<Product> product = AppStream<Product>();
   final AppStream<ProductUtils> utils = AppStream<ProductUtils>.seeded(ProductUtils());
   final AppStream<ProductStep> stepStream = AppStream<ProductStep>();
-
+  final AppStream<ProductDownload> downloadStream =
+      AppStream<ProductDownload>.seeded(ProductDownload());
 
   Future<void> getKits() async {
     final response = await ProductProvider.getKits();
@@ -84,17 +87,31 @@ class ProductController {
 
   Future<void> downloadProduct(Product product) async {
     try {
-      product.image = await downloadArchive('image.png', product.image);
-      product.pdf = await downloadArchive('pdf.pdf', product.pdf);
-      product.model = await downloadArchive('model.glb', product.model);
+      await deleteDirectory(product.kitName, product.name);
+      downloadStream.value.reset();
+      downloadStream.update();
+      downloadStream.value.length = product.steps.length + 4;
+      setDownloadNextStep('Baixando imagem');
+      product.image =
+          await downloadArchive(product.kitName, product.name, 'image.png', product.image);
+      setDownloadNextStep('Baixando pdf');
+      product.pdf = await downloadArchive(product.kitName, product.name, 'pdf.pdf', product.pdf);
+      setDownloadNextStep('Baixando modelo 3D');
+      product.model =
+          await downloadArchive(product.kitName, product.name, 'model.glb', product.model);
       for (var step in product.steps) {
-        step.model = await downloadArchive('step/${product.steps.indexOf(step)}.glb', step.model);
+        setDownloadNextStep(
+            'Baixando passo a passo (${product.steps.indexOf(step) + 1}/${product.steps.length})');
+        step.model = await downloadArchive(
+            product.kitName, product.name, 'step/${product.steps.indexOf(step)}.glb', step.model);
       }
+      setDownloadNextStep('Salvando dados');
       product.downloaded = true;
       for (var step in product.steps) {
         step.downloaded = true;
       }
       await saveKit(product);
+      downloadStream.add(ProductDownload());
     } catch (e) {
       throw Error();
     }
@@ -109,9 +126,9 @@ class ProductController {
     }
   }
 
-  Future<String> downloadArchive(String name, String archive) async {
+  Future<String> downloadArchive(String kit, String product, String name, String archive) async {
     try {
-      final path = '${(await getTemporaryDirectory()).path}/$name';
+      final path = '${(await getTemporaryDirectory()).path}/$kit/$product/$name';
       await Dio().download(archive, path);
       return path;
     } catch (e) {
@@ -119,9 +136,16 @@ class ProductController {
     }
   }
 
+  Future<void> deleteDirectory(String kit, String product) async {
+    final Directory dir = Directory('${(await getTemporaryDirectory()).path}/$kit/$product');
+    if (await dir.exists()) {
+      await dir.delete(recursive: true);
+    }
+  }
+
   Future<void> onProductDownload(BuildContext context, Product product) async {
     if (!product.downloaded) {
-      DialogUtils.showLoadingDialog(context);
+      showDialog(context: context, builder: (_) => const ProductDownloadDialog(), barrierDismissible: false);
       try {
         await downloadProduct(product);
         Navigator.pop(context);
@@ -133,5 +157,11 @@ class ProductController {
         NotificationService.negative('Não foi possível realizar o download do produto!');
       }
     }
+  }
+
+  void setDownloadNextStep(String title) {
+    downloadStream.value.title = title;
+    downloadStream.value.current = downloadStream.value.current + 1;
+    downloadStream.add(downloadStream.value);
   }
 }

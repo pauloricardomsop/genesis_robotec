@@ -101,4 +101,18 @@ class ProductStep extends HiveObject {
 
 class ProductUtils {
   TextEditingController controller = TextEditingController();
+  bool searchOnlyFavorites = false;
+}
+
+class ProductDownload {
+  String title = 'Preparando arquivos';
+  double current = 0;
+  double length = 1;
+  ProductDownload();
+
+  void reset() {
+    title = 'Preparando arquivos';
+    current = 0;
+    length = 1;
+  }
 }

@@ -59,6 +59,7 @@ class _HomePageState extends State<HomePage> {
             body: StreamOut<AppPage>(
                 stream: _homeController.pageStream.listen,
                 child: (_, page) => PageView(
+                      physics: const NeverScrollableScrollPhysics(),
                       onPageChanged: (i) => _homeController.pageStream.add(AppPage.values[i]),
                       controller: _homeController.pageHomeController,
                       children: AppPage.values.map((e) => e.widget).toList(),

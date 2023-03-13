@@ -39,10 +39,12 @@ class _KitsPageState extends State<KitsPage> {
         child: (_, utils) => _body(
           utils,
           kits
-              .where((e) => e.name
-                  .toLowerCase()
-                  .replaceAll(' ', '')
-                  .contains(utils.controller.value.text.toLowerCase().replaceAll(' ', '')))
+              .where((e) =>
+                  e.name
+                      .toLowerCase()
+                      .replaceAll(' ', '')
+                      .contains(utils.controller.value.text.toLowerCase().replaceAll(' ', '')) &&
+                  (utils.searchOnlyFavorites ? e.favorite : true))
               .toList(),
         ),
       ),
@@ -57,7 +59,7 @@ class _KitsPageState extends State<KitsPage> {
         ClipRRect(
           borderRadius: BorderRadius.circular(24),
           child: Container(
-            color: const Color(0xFFEBEFF2),
+            color: const Color.fromARGB(255, 221, 223, 224),
             child: TextField(
               controller: utils.controller,
               onChanged: (v) => _productController.utils.update(),
@@ -74,18 +76,41 @@ class _KitsPageState extends State<KitsPage> {
                   color: Color(0xFF7E8996),
                   size: 28,
                 ),
-                suffixIcon: utils.controller.text.isNotEmpty
-                    ? InkWell(
+                suffixIcon: SizedBox(
+                  width: 72,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      if (utils.controller.text.isNotEmpty)
+                        InkWell(
+                          onTap: () {
+                            utils.controller.clear();
+                            _productController.utils.update();
+                          },
+                          child: Icon(
+                            size: 28,
+                            Icons.close,
+                            color: Colors.grey[600]!,
+                          ),
+                        ),
+                      if (utils.controller.text.isNotEmpty) const W(6),
+                      InkWell(
                         onTap: () {
-                          utils.controller.clear();
+                          utils.searchOnlyFavorites = !utils.searchOnlyFavorites;
                           _productController.utils.update();
                         },
                         child: Icon(
-                          Icons.close,
-                          color: Colors.grey[600]!,
+                          utils.searchOnlyFavorites ? Icons.star : Icons.star_border,
+                          size: 28,
+                          color: utils.searchOnlyFavorites
+                              ? const Color.fromARGB(255, 227, 220, 32)
+                              : Colors.grey[600]!,
                         ),
-                      )
-                    : null,
+                      ),
+                      const W(10),
+                    ],
+                  ),
+                ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                 fillColor: const Color(0xFFEBEFF2),
                 hoverColor: const Color(0xFFEBEFF2),
