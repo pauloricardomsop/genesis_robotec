@@ -159,7 +159,7 @@ class _AboutPageState extends State<AboutPage> {
               itemContact('Email de ajuda', 'suportetecnicogenesisrobotec@gmail.com'),
               itemContact('Instagram', 'genesis_robotec'),
               itemContact('YouTube:', 'Genesis Robotec'),
-              itemContact('Endereço:', 'Av. engenheiro Luiz Montenegro, 732, Siqueira'),
+              itemContact('Endereço:', 'Av. engenheiro Luiz Montenegro, 732, Siqueira'),
               const H(8),
             ],
           ),
